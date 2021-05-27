@@ -1,7 +1,9 @@
 .main{
+    /*
     border-style: dashed;
     border-width: 1px;
     border-color: blue;
+    */
 
     display: flex;
     align-items: center;
@@ -12,9 +14,15 @@
 }
 
 .menu{
+    /*
     border-style: dashed;
     border-width: 1px;
     border-color: red;
+    */
+
+    border-style:solid;
+    border-width:1px;
+    border-color:darkgray;
 
     display: flex;
     align-items: center;
@@ -28,9 +36,11 @@
 }
 
 .catalog{
+    /*
     border-style: dashed;
     border-width: 1px;
     border-color: green;
+    */
 
     display: flex;
     justify-content: center;
@@ -42,9 +52,11 @@
 }
 
 .bookTable{
+    /*
     border-style: dashed;
     border-width: 1px;
     border-color: purple;
+    */
 
     width:100%;
 }
