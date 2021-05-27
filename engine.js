@@ -1,0 +1,1 @@
+document.querySelector("#inputTitle").value='test title';

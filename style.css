@@ -1,0 +1,42 @@
+.main{
+    border-style: dashed;
+    border-width: 1px;
+    border-color: blue;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    height:100%;
+    width:100%;
+}
+
+.menu{
+    border-style: dashed;
+    border-width: 1px;
+    border-color: red;
+
+    display: flex;
+    align-items: center;
+
+    height:50px;
+    width:100%;
+}
+
+.bookInput{
+    margin:10px
+}
+
+.catalog{
+    border-style: dashed;
+    border-width: 1px;
+    border-color: green;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    height:600px;
+    width:100%;
+    margin-top: 10px;
+}
