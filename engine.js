@@ -1,10 +1,49 @@
+function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
+    }
+}
+
 let myLibrary=[];
+
+if (storageAvailable('localStorage')) {
+    console.log(localStorage.getItem('myLibrary')!==null);
+    if(localStorage.getItem('myLibrary')!==null){
+        let myLibrary=localStorage.getItem('myLibrary');
+    }else{
+        let myLibrary=[];
+    };
+  }
+  else {
+    let myLibrary=[];
+  };
+
 const catalog = document.querySelector("#catalog");
 const inputTitle = document.querySelector('#inputTitle');
 const inputAuhtor = document.querySelector('#inputAuthor');
 const inputPages = document.querySelector('#inputPages');
 const inputIsRead = document.querySelector('#inputIsRead');
 const newBookBtn = document.querySelector('#newBookBtn');
+const saveBtn = document.querySelector('#saveBtn');
 
 function book(title, author, pages, isRead){
     this.title=title;
@@ -90,6 +129,17 @@ newBookBtn.addEventListener("click",function(){
     renderCatalog(myLibrary);
 
 });
+
+saveBtn.addEventListener("click",function(){
+    console.log('Save Button clicked!');
+    if (storageAvailable('localStorage')) {
+        localStorage.setItem('library', JSON.stringify(myLibrary));
+      }
+      else {
+        alert("No local storage available with this browser");
+      }
+});
+
 
 
 
