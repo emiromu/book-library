@@ -24,18 +24,24 @@ function storageAvailable(type) {
 }
 
 let myLibrary=[];
+let loadedLibrary=[];
 
 if (storageAvailable('localStorage')) {
-    console.log(localStorage.getItem('myLibrary')!==null);
-    if(localStorage.getItem('myLibrary')!==null){
-        let myLibrary=localStorage.getItem('myLibrary');
+    if(localStorage.getItem('library')!==null){
+        loadedLibrary=JSON.parse(localStorage.getItem('library'));
     }else{
-        let myLibrary=[];
+        loadedLibrary=myLibrary;
     };
   }
   else {
-    let myLibrary=[];
+    loadedLibrary=myLibrary;
   };
+
+for(let i=0; i<loadedLibrary.length; i++){
+    myLibrary[i]=new book(loadedLibrary[i].title, loadedLibrary[i].author, loadedLibrary[i].pages, loadedLibrary[i].isRead);
+    myLibrary[i].index = loadedLibrary[i].index;
+}
+
 
 const catalog = document.querySelector("#catalog");
 const inputTitle = document.querySelector('#inputTitle');
@@ -131,7 +137,7 @@ newBookBtn.addEventListener("click",function(){
 });
 
 saveBtn.addEventListener("click",function(){
-    console.log('Save Button clicked!');
+    console.log('Library saved to local storage!');
     if (storageAvailable('localStorage')) {
         localStorage.setItem('library', JSON.stringify(myLibrary));
       }
@@ -144,12 +150,13 @@ saveBtn.addEventListener("click",function(){
 
 
 /* default books for testing */
+/*
 const defaultbook1 = new book('The Sailor Who Fell from Grace with the Sea','Yukio Mishima',181,true);
 const defaultbook2 = new book('Twilight','Stephenie Meyer',498,false);
 const defaultbook3 = new book('Children of Dune','Frank Herbert',444,true);
 addToLibrary(myLibrary,defaultbook1);
 addToLibrary(myLibrary,defaultbook2);
-addToLibrary(myLibrary,defaultbook3);
+addToLibrary(myLibrary,defaultbook3);*/
 /* * */
 
 /* render catalog on page first load */
