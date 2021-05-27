@@ -33,10 +33,40 @@
     border-color: green;
 
     display: flex;
-    align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
 
-    height:600px;
+
     width:100%;
     margin-top: 10px;
 }
+
+.bookTable{
+    border-style: dashed;
+    border-width: 1px;
+    border-color: purple;
+
+    width:100%;
+}
+
+th{
+    border: 1px solid #4e4e4e;
+    text-align: center;
+    background-color: #788ff8;
+    padding: 8px;
+}
+
+.ghostCol{
+    display: flex;
+    border-style: none;
+    background-color: none;
+}
+
+td{
+    text-align: center;
+    border: 1px solid #4e4e4e;
+}
+
+tr:nth-child(even) td:not(:last-child){
+    background-color: #dddddd;
+  }
