@@ -23,12 +23,72 @@ function storageAvailable(type) {
     }
 }
 
-let myLibrary=[];
-let loadedLibrary=[];
+class Library{
 
+    constructor(){
+        this.shelf=[];
+    };
+
+    getShelf(){
+        return this.shelf;
+    }
+
+    setShelf(shelf){
+        this.shelf=shelf;
+    }
+
+    addToLibrary(book){
+        if(this.shelf.length<=0){
+        book.setIndex(0);
+        }else{
+        let maxIndexBook = this.shelf.reduce((accumulator, currentValue) =>
+            (accumulator.index > currentValue.index) ? accumulator: currentValue);
+        book.setIndex(maxIndexBook.index+1);
+        }
+        this.shelf.push(book);
+    };
+    
+    toggleRead(index){
+        this.shelf[index].isRead = this.shelf[index].isRead ? false: true;
+    }
+}
+
+class Book{
+    
+    constructor(title, author, pages, isRead){
+    this.title=title;
+    this.author=author;
+    this.pages=pages;
+    this.isRead=isRead;
+    this.index=-1;
+    };
+
+    getIndex(){
+        return this.index;
+    };
+
+    setIndex(index){
+        this.index=index;
+        return;
+    };
+
+    verboseIsRead(){
+        return this.isRead ? 'Read already' : 'Not read yet';
+    };
+
+    info(){
+        return(`${this.title} by ${this.author}, ${this.pages} pages, ${this.verboseIsRead()}`);
+    }
+};
+
+
+let myLibrary=new Library();
+let loadedLibrary=new Library();
+
+/*Copy loadedLibrary into active myLibrary if available*/
 if (storageAvailable('localStorage')) {
     if(localStorage.getItem('library')!==null){
-        loadedLibrary=JSON.parse(localStorage.getItem('library'));
+        loadedLibrary.setShelf(JSON.parse(localStorage.getItem('library')));
     }else{
         loadedLibrary=myLibrary;
     };
@@ -37,9 +97,8 @@ if (storageAvailable('localStorage')) {
     loadedLibrary=myLibrary;
   };
 
-for(let i=0; i<loadedLibrary.length; i++){
-    myLibrary[i]=new book(loadedLibrary[i].title, loadedLibrary[i].author, loadedLibrary[i].pages, loadedLibrary[i].isRead);
-    myLibrary[i].index = loadedLibrary[i].index;
+for(let i=0; i<loadedLibrary.getShelf().length; i++){
+    myLibrary.addToLibrary(new Book(loadedLibrary.getShelf()[i].title, loadedLibrary.getShelf()[i].author, loadedLibrary.getShelf()[i].pages, loadedLibrary.getShelf()[i].isRead, loadedLibrary.getShelf()[i].isRead));
 }
 
 
@@ -50,36 +109,6 @@ const inputPages = document.querySelector('#inputPages');
 const inputIsRead = document.querySelector('#inputIsRead');
 const newBookBtn = document.querySelector('#newBookBtn');
 const saveBtn = document.querySelector('#saveBtn');
-
-function book(title, author, pages, isRead){
-    this.title=title;
-    this.author=author;
-    this.pages=pages;
-    this.isRead=isRead;
-     
-    this.verboseIsRead = function(){
-        return this.isRead ? 'Read already' : 'Not read yet';
-    };
-
-    this.info = function(){
-        return(`${this.title} by ${this.author}, ${this.pages} pages, ${this.verboseIsRead()}`);
-    }
-};
-
-function addToLibrary(library,book){
-    if(library.length<=0){
-    book.index=0;
-    }else{
-    let maxIndexBook = library.reduce((accumulator, currentValue) =>
-        (accumulator.index > currentValue.index) ? accumulator: currentValue);
-    book.index=maxIndexBook.index+1;
-    }
-    library.push(book);
-};
-
-function toggleRead(library,index){
-    library[index].isRead = library[index].isRead ? false: true;
-}
 
 function renderCatalog(library){
     let bookTable = document.createElement("table");
@@ -98,22 +127,22 @@ function renderCatalog(library){
                             <div width="20%;" class"=ghostCol"></div>`;
     /*catalog table data rows*/
     let dataRows = [];
-    for(let i=0; i<library.length; i++){
+    for(let i=0; i<library.getShelf().length; i++){
         dataRows[i] = bookTable.insertRow(i+1);
-        dataRows[i].innerHTML = `<td>${library[i].title}</td>
-                                <td>${library[i].author}</td>
-                                <td>${library[i].pages}</td>
-                                <td>${library[i].verboseIsRead()}<input id="inputRead${library[i].index}" type="checkbox" ${library[i].isRead ? "checked":""}></td>
-                                <div class="ghostCol"><button id="btnRemove${library[i].index}">Remove</button></div>`;
+        dataRows[i].innerHTML = `<td>${library.getShelf()[i].title}</td>
+                                <td>${library.getShelf()[i].author}</td>
+                                <td>${library.getShelf()[i].pages}</td>
+                                <td>${library.getShelf()[i].verboseIsRead()}<input id="inputRead${library.getShelf()[i].index}" type="checkbox" ${library.getShelf()[i].isRead ? "checked":""}></td>
+                                <div class="ghostCol"><button id="btnRemove${library.getShelf()[i].index}">Remove</button></div>`;
         /* check and uncheck isRead */
-        bookTable.querySelector(`#inputRead${library[i].index}`).addEventListener("change",function (){
-            toggleRead(library,i);
+        bookTable.querySelector(`#inputRead${library.getShelf()[i].index}`).addEventListener("change",function (){
+            library.toggleRead(i);
             renderCatalog(library);
         });
 
-        bookTable.querySelector(`#btnRemove${library[i].index}`).addEventListener("click",function(){
+        bookTable.querySelector(`#btnRemove${library.getShelf()[i].index}`).addEventListener("click",function(){
             if(confirm("Are you sure you want to remove that book?")){
-                library.splice(i,1);
+                library.getShelf().splice(i,1);
                 renderCatalog(library);
             };
         });
@@ -127,7 +156,7 @@ newBookBtn.addEventListener("click",function(){
         alert("Please enter all values before adding a book");
         return null;
     };
-    addToLibrary(myLibrary,new book(inputTitle.value, inputAuhtor.value, inputPages.value, inputIsRead.checked));
+    myLibrary.addToLibrary(new Book(inputTitle.value, inputAuhtor.value, inputPages.value, inputIsRead.checked));
     inputTitle.value='';
     inputAuhtor.value='';
     inputPages.value=null;
@@ -139,25 +168,13 @@ newBookBtn.addEventListener("click",function(){
 saveBtn.addEventListener("click",function(){
     console.log('Library saved to local storage!');
     if (storageAvailable('localStorage')) {
-        localStorage.setItem('library', JSON.stringify(myLibrary));
+        localStorage.setItem('library', JSON.stringify(myLibrary.getShelf()));
       }
       else {
         alert("No local storage available with this browser");
       }
 });
 
-
-
-
-/* default books for testing */
-/*
-const defaultbook1 = new book('The Sailor Who Fell from Grace with the Sea','Yukio Mishima',181,true);
-const defaultbook2 = new book('Twilight','Stephenie Meyer',498,false);
-const defaultbook3 = new book('Children of Dune','Frank Herbert',444,true);
-addToLibrary(myLibrary,defaultbook1);
-addToLibrary(myLibrary,defaultbook2);
-addToLibrary(myLibrary,defaultbook3);*/
-/* * */
 
 /* render catalog on page first load */
 renderCatalog(myLibrary);
