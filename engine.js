@@ -104,11 +104,38 @@ for(let i=0; i<loadedLibrary.getShelf().length; i++){
 
 const catalog = document.querySelector("#catalog");
 const inputTitle = document.querySelector('#inputTitle');
-const inputAuhtor = document.querySelector('#inputAuthor');
+const inputAuthor = document.querySelector('#inputAuthor');
 const inputPages = document.querySelector('#inputPages');
 const inputIsRead = document.querySelector('#inputIsRead');
 const newBookBtn = document.querySelector('#newBookBtn');
 const saveBtn = document.querySelector('#saveBtn');
+const inputForm = document.querySelector("#topmenu");
+
+inputTitle.addEventListener('input', () => {
+    inputTitle.setCustomValidity('');
+    inputTitle.checkValidity();
+    });
+inputTitle.addEventListener('invalid', () => {
+        if(inputTitle.value === '') {
+            inputTitle.setCustomValidity('The Title is required.');
+        } else {
+            inputTitle.setCustomValidity('The Title can only contain upper and lowercase letters.');
+        }
+    });
+
+inputAuthor.addEventListener('input', () => {
+    inputAuthor.setCustomValidity('');
+    inputAuthor.checkValidity();
+    });
+inputAuthor.addEventListener('invalid', () => {
+        if(inputAuthor.value === '') {
+            inputAuthor.setCustomValidity('The Author is required.');
+        } else {
+            inputAuthor.setCustomValidity('The Author can only contain upper and lowercase letters.');
+        }
+    });
+
+
 
 function renderCatalog(library){
     let bookTable = document.createElement("table");
@@ -152,13 +179,23 @@ function renderCatalog(library){
 }
 
 newBookBtn.addEventListener("click",function(){
-    if(inputTitle.value==='' || inputAuhtor.value==='' || inputPages.value<=0){
-        alert("Please enter all values before adding a book");
-        return null;
+    console.log(`inputAuthor.checkValidity()=${inputAuthor.checkValidity()}`);
+    if (!inputAuthor.checkValidity()){
+        inputAuthor.reportValidity();;
     };
-    myLibrary.addToLibrary(new Book(inputTitle.value, inputAuhtor.value, inputPages.value, inputIsRead.checked));
+
+    console.log(`inputTitle.checkValidity()=${inputTitle.checkValidity()}`);
+    if (!inputTitle.checkValidity()){
+        inputTitle.reportValidity();
+    };
+
+    console.log(`inputForm.checkValidity()=${inputForm.checkValidity()}`); 
+    if (!inputForm.checkValidity()){
+    return null;
+    };
+    myLibrary.addToLibrary(new Book(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead.checked));
     inputTitle.value='';
-    inputAuhtor.value='';
+    inputAuthor.value='';
     inputPages.value=null;
     inputIsRead.checked=false;
     renderCatalog(myLibrary);
