@@ -6,19 +6,19 @@
     </head>
     <body>
         <div id="main" class="main">
-            <h3>Library prototype, as per the exercise from <a href="https://www.theodinproject.com/">The Odin Project</a></h3>
-            <div id="topmenu" class="menu">
+            <h3>Library prototype, by Emilien Romulus (<a href="https://github.com/emiromu">github</a>)</h3>
+            <form id="topmenu" class="menu">
                 <div class="bookInput">
-                    Title: <input type="text" id="inputTitle">
+                    Title*: <input type="text" id="inputTitle" required minlength="1" maxlength="24" required pattern="[A-Za-z]+">
                 </div>
                 <div class="bookInput">
-                    Author: <input type="text" id="inputAuthor">
+                    Author*: <input type="text" id="inputAuthor" required minlength="1" maxlength="24" required pattern="[A-Za-z]+">
                 </div>
                 <div class="bookInput">
                     Pages: <input type="number" id="inputPages" min=0>
                 </div>
                 <div class="bookInput">
-                    Already read: <input type="checkbox" id="inputIsRead">
+                    Already read: <input type="checkbox" id="inputIsRead" min=1 max=99999>
                 </div>
                 <div>
                     <button type=button id="newBookBtn">Add Book</button>
@@ -26,7 +26,7 @@
                 <div>
                     <button type=button id="saveBtn">Save library locally</button>
                 </div>
-            </div>
+            </form>
             <div id="catalog" class="catalog">
 
             </div>
